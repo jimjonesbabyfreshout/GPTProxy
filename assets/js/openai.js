@@ -1,4 +1,4 @@
-//参考自 https://github.com/open-tdp/openai-chat
+//Refer to https://github.com/open-tdp/openai-chat
 const app = {
     u: '',
     alert: null,
@@ -6,7 +6,7 @@ const app = {
     loading: false,
     isValidated() {
         const inputText = this.u.trim();
-        // 使用正则表达式匹配以 "sk-" 开头的密钥，并排除非匹配项
+        // Use regex to match keys starting with "sk-" and filter out non-matches
         const regex =  /^(sk-|sess-).{21,}$/;
         const keys = inputText.split('\n').filter(key => regex.test(key.trim()));
         return keys
@@ -14,20 +14,20 @@ const app = {
 
     clear() {
         this.total = this.total.filter(item => {
-            return item.total_available && (item.total_available > 0 || item.total_available === "查询失败");
+            return item.total_available && (item.total_available > 0 || item.total_available === "Query failed");
         });
         this.u = this.total.map(item => item.key).join('\n');
-        this.alert = { type: 'success', message: '清理完成' };
+        this.alert = { type: 'success', message: 'Cleaned up' };
     },
 
     async submit($refs) {
         if (!this.u) {
-            this.alert = { type: 'error', message: '请输入以sess-开头的Authorization...' }
+            this.alert = { type: 'error', message: 'Please enter Authorization starting with sess-' }
             return
         }
         const keys = this.isValidated();
         if (keys.length === 0) {
-            this.alert = { type: 'error', message: '非法key格式' }
+            this.alert = { type: 'error', message: 'Invalid key format' }
             return
         }
 
@@ -47,7 +47,7 @@ const app = {
                 'content-type': 'application/json',
                 Authorization: 'Bearer ' + key,
             },
-            credentials: 'omit', // 添加此行以取消发送凭据
+            credentials: 'omit', // Add this line to stop sending credentials
         }
 
         if (body != null) {
@@ -64,7 +64,7 @@ const app = {
                     // throw new Error(data.error.message);
                     return data
                 }
-                throw new Error(r.statusText || '请求失败');
+                throw new Error(r.statusText || 'Request failed');
             }
             return data;
         })
@@ -96,12 +96,12 @@ const app = {
                 total_granted: 0,
                 total_used: 0,
                 total_available: 0,
-                plan: 'API Key 无效',
+                plan: 'API Key Invalid',
                 endDate: '',
                 latest_gpt: subscription.error.code
             });
             this.loading = false
-            this.alert = { type: 'success', message: "查询成功" }
+            this.alert = { type: 'success', message: "Query successful" }
         } else {
             const start_date = subscription.hard_limit_usd > 20
                 ? [today.getFullYear(), today.getMonth() + 1, '1'].join('-') : formatDate(today / 1000 - 90 * 86400);
@@ -119,16 +119,16 @@ const app = {
             });
             const GPTModel = highestGPTModel.id
             const plan = (subscription.plan.title === "Pay-as-you-go") ? "Pay-as-you-go" : subscription.plan.id;
-            //总
+            //Total
             const total_granted = subscription.hard_limit_usd;
-            //已用
+            //Used
             // const total_used = usageData.total_usage / 100 || -1
-            const total_used = typeof usageData.total_usage === "number" ? usageData.total_usage / 100 : "查询失败";
+            const total_used = typeof usageData.total_usage === "number" ? usageData.total_usage / 100 : "Query failed";
 
-            // 剩余额度
-            const total_available = typeof total_used === "number" ? total_granted - total_used : "查询失败";
+            // Remaining quota
+            const total_available = typeof total_used === "number" ? total_granted - total_used : "Query failed";
 
-            //剩余额度
+            //Remaining quota
             // const total_available = total_granted - total_used;
 
             if (!this.total) {
@@ -149,7 +149,7 @@ const app = {
         }
 
         this.loading = false
-        this.alert = { type: 'success', message: "查询成功" }
+        this.alert = { type: 'success', message: "Query successful" }
         return
 
     }
@@ -163,7 +163,7 @@ const ip = {
             .then(res => res.json())
             .then(res => {
                 // console.log(res);
-                this.ipinfo = `当前IP: ${res.ip} (${res.province} ${res.city}  ${res.distinct} ${res.isp})  `
+                this.ipinfo = `Current IP: ${res.ip} (${res.province} ${res.city}  ${res.distinct} ${res.isp})  `
 
             })
             .catch(err => {
@@ -178,9 +178,9 @@ const ip = {
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text)
         .then(() => {
-            alert('API已复制到剪贴板');
+            alert('API copied to clipboard');
         })
         .catch((error) => {
-            console.error('API复制到剪贴板时出错:', error);
+            console.error('Error copying API to clipboard:', error);
         });
 }
