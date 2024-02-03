@@ -1,11 +1,11 @@
 export async function onRequest(context) {
     const {
-        request, // 与现有 Worker API 中的 request 相同
-        env, // 与现有 Worker API 中的 env 相同
-        params, // 如果文件名包含 [id] 或 [[path]]，则与现有 Worker API 中的 params 相同
-        waitUntil, // 与现有 Worker API 中的 ctx.waitUntil 相同
-        next, // 用于中间件或获取资源
-        data, // 在中间件之间传递数据的任意空间
+        request, // Same as the request in the existing Worker API
+        env, // Same as env in the existing Worker API
+        params, // If the document name contains [id] or [[path]], it is the same as the params in the existing Worker API.
+        waitUntil, // Same as ctx.waitUntil in the existing Worker API
+        next, // Used for middleware or obtaining resources
+        data, // Any space to transfer data between middleware
     } = context;
     // const newResponse = request.clone();
     const url = new URL(request.url);
